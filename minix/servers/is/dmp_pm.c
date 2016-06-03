@@ -11,7 +11,7 @@
 #include "../pm/mproc.h"
 #include <minix/timers.h>
 #include <minix/config.h> 
-#include <minix/type.h> 
+#include <minix/type.h>
 
 struct mproc mproc[NR_PROCS];
 
@@ -101,6 +101,47 @@ void sigaction_dmp()
   if (i >= NR_PROCS) i = 0;
   else printf("--more--\r");
   prev_i = i;
+}
+
+
+/*===========================================================================*
+ *				benchmark_dmp				     *
+ *===========================================================================*/
+void benchmark_dmp()
+{
+	struct mbench mbenchmark;
+	if (getsysinfo(PM_PROC_NR, SI_BNCH_TAB, &mbenchmark, sizeof(struct mbench)) != OK) {
+		printf("Error obtaining info from PM. Perhaps recompile IS?\n");
+		return;
+	}
+
+	printf("\n\nBenchmark info:\n\n");
+
+	printf("    Processes started: ");
+	if(mbenchmark.active_benchmarks & BNCH_PROCESS_START){
+		printf("%d\n", mbenchmark.value[BNCH_PROCESS_START]);
+	}else{
+		printf("-\n");
+	}
+	printf("    Processes ended: ");
+	if(mbenchmark.active_benchmarks & BNCH_PROCESS_END){
+		printf("%d\n", mbenchmark.value[BNCH_PROCESS_END]);
+	}else{
+		printf("-\n");
+	}
+	printf("    Processes killed: ");
+	if(mbenchmark.active_benchmarks & BNCH_PROCESS_KILL){
+		printf("%d\n", mbenchmark.value[BNCH_PROCESS_KILL]);
+	}else{
+		printf("-\n");
+	}
+	printf("    Processes memory: ");
+	if(mbenchmark.active_benchmarks & BNCH_PROCESS_MEM){
+		printf("%d\n", mbenchmark.value[BNCH_PROCESS_MEM]);
+	}else{
+		printf("-\n");
+	}
+
 }
 
 

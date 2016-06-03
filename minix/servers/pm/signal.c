@@ -197,7 +197,7 @@ int do_sigreturn(void)
 int do_kill(void)
 {
 /* Perform the kill(pid, signo) system call. */
-
+  mbenchmark.value[BNCH_PROCESS_KILL]++;
   return check_sig(m_in.m_lc_pm_sig.pid, m_in.m_lc_pm_sig.nr, FALSE /* ksig */);
 }
 

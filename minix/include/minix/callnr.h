@@ -58,8 +58,10 @@
 #define PM_GETEPINFO		(PM_BASE + 45)
 #define PM_GETPROCNR		(PM_BASE + 46)
 #define PM_GETSYSINFO		(PM_BASE + 47)
+#define PM_START_BNCH		(PM_BASE + 48)
+#define PM_STOP_BNCH		(PM_BASE + 49)
 
-#define NR_PM_CALLS		48	/* highest number from base plus one */
+#define NR_PM_CALLS		50	/* highest number from base plus one */
 
 /*===========================================================================*
  *				Calls to VFS				     *

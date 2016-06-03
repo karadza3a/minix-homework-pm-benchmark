@@ -46,6 +46,8 @@ int do_getepinfo(void);
 int do_svrctl(void);
 int do_getsetpriority(void);
 int do_getrusage(void);
+int do_start_pm_benchmark(void);
+int do_stop_pm_benchmark(void);
 
 /* schedule.c */
 void sched_init(void);

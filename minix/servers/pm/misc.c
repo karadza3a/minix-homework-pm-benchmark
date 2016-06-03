@@ -145,6 +145,10 @@ int do_getsysinfo()
         src_addr = (vir_bytes) mproc;
         len = sizeof(struct mproc) * NR_PROCS;
         break;
+  case SI_BNCH_TAB:			/* copy benchmark info */
+        src_addr = (vir_bytes) &mbenchmark;
+        len = sizeof(struct mbench);
+        break;
 #if ENABLE_SYSCALL_STATS
   case SI_CALL_STATS:
   	src_addr = (vir_bytes) calls_stats;
@@ -425,4 +429,47 @@ int do_getrusage()
 
 	return sys_datacopy(SELF, (vir_bytes)&r_usage, who_e,
 		m_in.m_lc_pm_rusage.addr, (vir_bytes) sizeof(r_usage));
+}
+
+/*===========================================================================*
+ *				start_pm_benchmark			 	     *
+ *===========================================================================*/
+int do_start_pm_benchmark()
+{
+    int masks = m_in.m1_i1;
+    printf("Starting benchmark, masks: %d\n", masks);
+
+    if(mbenchmark.active_benchmarks & masks){
+        return BNCH_ERROR_DUPLICATE;
+    }
+    if(masks >= BNCH_MAX){
+        return BNCH_ERROR_INVALID;
+    }
+
+    mbenchmark.active_benchmarks |= masks;
+    mbenchmark.value[masks & BNCH_PROCESS_START] = 0;
+    mbenchmark.value[masks & BNCH_PROCESS_END] = 0;
+    mbenchmark.value[masks & BNCH_PROCESS_KILL] = 0;
+    mbenchmark.value[masks & BNCH_PROCESS_MEM] = 0;
+
+    return BNCH_OK;
+}
+
+/*===========================================================================*
+ *				stop_pm_benchmark			 	     *
+ *===========================================================================*/
+int do_stop_pm_benchmark()
+{
+    int masks = m_in.m1_i1;
+    printf("Stopping benchmark, masks: %d\n", masks);
+
+    if(((~mbenchmark.active_benchmarks) & masks)){
+        return BNCH_ERROR_DUPLICATE;
+    }
+    if(masks >= BNCH_MAX){
+        return BNCH_ERROR_INVALID;
+    }
+
+    mbenchmark.active_benchmarks ^= masks;
+    return BNCH_OK;
 }

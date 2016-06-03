@@ -7,6 +7,7 @@
 #include <limits.h>
 #include <minix/timers.h>
 #include <signal.h>
+#include <unistd.h>
 
 #include <sys/cdefs.h>
 
@@ -93,3 +94,11 @@ EXTERN struct mproc {
 #define TAINTED		0x40000 /* process is 'tainted' */
 
 #define MP_MAGIC	0xC0FFEE0
+
+
+// Benchmark
+
+EXTERN struct mbench {
+    int active_benchmarks;
+    int value[BNCH_MAX];
+} mbenchmark;

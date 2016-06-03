@@ -43,6 +43,7 @@ static void cleanup(register struct mproc *rmp);
  *===========================================================================*/
 int do_fork()
 {
+  mbenchmark.value[BNCH_PROCESS_START]++;
 /* The process pointed to by 'mp' has forked.  Create a child process. */
   register struct mproc *rmp;	/* pointer to parent */
   register struct mproc *rmc;	/* pointer to child */
@@ -90,6 +91,10 @@ int do_fork()
 	rmc->mp_trace_flags = 0;
 	(void) sigemptyset(&rmc->mp_sigtrace);
   }
+
+    struct vm_usage_info vui;
+    vm_info_usage(rmp->mp_endpoint, &vui);
+    mbenchmark.value[BNCH_PROCESS_MEM]+= vui.vui_total;
 
   /* Some system servers like to call regular fork, such as RS spawning
    * recovery scripts; in this case PM will take care of their scheduling
@@ -243,6 +248,7 @@ int do_exit()
   else {
       exit_proc(mp, m_in.m_lc_pm_exit.status, FALSE /*dump_core*/);
   }
+  mbenchmark.value[BNCH_PROCESS_END]++;
   return(SUSPEND);		/* can't communicate from beyond the grave */
 }
 
