@@ -187,5 +187,12 @@ struct minix_kerninfo {
 
 #define MINIX_KIF_IPCVECS	(1L << 0)
 
+
+// HSS Server defines
+
+#define hss_filepath m_m1.m1p1
+#define hss_httphost m_m1.m1p2
+#define hss_callnr m_m1.m1i3
+
 #endif /* _TYPE_H */
 
