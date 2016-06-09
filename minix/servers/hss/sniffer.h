@@ -10,11 +10,12 @@
 #include <regex.h>
 
 #define HSS_MAX_SNIFFERS 32 /* number of active sniffers */
+#define HSS_MAX_STRLEN 128
 
 struct sniffing_process {
 	int active;
-	char *http_host;
-	char *file;
+	char http_host[HSS_MAX_STRLEN];
+	char filepath[HSS_MAX_STRLEN];
 }sniffing_process[HSS_MAX_SNIFFERS];
 
 #endif /* _HSS_SNIFFER_H_ */

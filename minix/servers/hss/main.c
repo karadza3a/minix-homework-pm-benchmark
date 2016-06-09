@@ -53,6 +53,9 @@ int main(int argc, char **argv)
           case HSS_STOP_SNIFFING:
               result = do_stop_sniffing(&m);
               break;
+          case HSS_GETSYSINFO:
+              result = do_getsysinfo(&m);
+              break;
           default:
               printf("HSS: warning, got illegal request from %d\n", m.m_source);
               result = EINVAL;

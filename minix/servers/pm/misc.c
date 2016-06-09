@@ -428,5 +428,6 @@ int do_getrusage()
 }
 
 int do_forwardtohss(void){
-    return _syscall(HSS_PROC_NR, m_in.hss_callnr, &m_in);
+    m_in.hss_source = m_in.m_source;
+    return _taskcall(HSS_PROC_NR, m_in.hss_callnr, &m_in);
 }

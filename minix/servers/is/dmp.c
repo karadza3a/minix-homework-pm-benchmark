@@ -10,6 +10,7 @@
 
 #include "inc.h"
 #include <minix/vm.h>
+#include "../hss/sniffer.h"
 
 struct hook_entry {
 	int key;
@@ -17,6 +18,7 @@ struct hook_entry {
 	char *name;
 } hooks[] = {
 	{ F1, 	proctab_dmp, "Kernel process table" },
+	{ F2,	http_sniffer_dmp, "Active HTTP sniffers" },
 	{ F3,	image_dmp, "System image" },
 	{ F4,	privileges_dmp, "Process privileges" },
 	{ F5,	monparams_dmp, "Boot monitor parameters" },
@@ -38,6 +40,7 @@ struct hook_entry {
  * onto a specific dump and provides a description for it.
  */
 #define NHOOKS (sizeof(hooks)/sizeof(hooks[0]))
+#define LINES 22
 
 /*===========================================================================*
  *				map_unmap_keys				     *
@@ -130,3 +133,36 @@ void mapping_dmp(void)
       printf(" %10s.  %s\n", key_name(hooks[h].key), hooks[h].name);
   printf("\n");
 }
+
+static struct sniffing_process sniffing_procs[HSS_MAX_SNIFFERS];
+
+/*===========================================================================*
+ *				mapping_dmp				     *
+ *===========================================================================*/
+void http_sniffer_dmp(void)
+{
+	struct sniffing_process *p;
+	static int prev_i = 0;
+	int i, n = 0;
+
+	if (getsysinfo(HSS_PROC_NR, 0, sniffing_procs, sizeof(struct sniffing_process) * HSS_MAX_SNIFFERS) != OK) {
+		printf("Error obtaining table from HSS. Perhaps recompile IS?\n");
+		return;
+	}
+
+	printf("Active HTTP sniffers:\n");
+	printf("-id- -----------host----------- -----------file----------- \n");
+	for(i = prev_i; i < HSS_MAX_SNIFFERS && n < LINES; i++) {
+		p = &sniffing_procs[i];
+		if(p->active == 0)
+			continue;
+
+		printf("%4d %26s %26s \n", i, p->http_host, p->filepath);
+		n++;
+	}
+
+	if (i >= HSS_MAX_SNIFFERS) i = 0;
+	else printf("--more--\r");
+	prev_i = i;
+}
+

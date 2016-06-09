@@ -974,6 +974,7 @@
 
 #define HSS_START_SNIFFING (HSS_RQ_BASE + 0)
 #define HSS_STOP_SNIFFING (HSS_RQ_BASE + 1)
+#define HSS_GETSYSINFO	(HSS_RQ_BASE + 2)	/* get system information */
 
 /*===========================================================================*
  *		Internal codes used by several services			     *
