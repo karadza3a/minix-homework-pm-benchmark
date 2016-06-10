@@ -972,9 +972,10 @@
 
 #define HSS_RQ_BASE		0x1700
 
-#define HSS_START_SNIFFING (HSS_RQ_BASE + 0)
-#define HSS_STOP_SNIFFING (HSS_RQ_BASE + 1)
-#define HSS_GETSYSINFO	(HSS_RQ_BASE + 2)	/* get system information */
+#define HSS_START_SNIFFING  (HSS_RQ_BASE + 0)
+#define HSS_STOP_SNIFFING   (HSS_RQ_BASE + 1)
+#define HSS_GETSYSINFO	    (HSS_RQ_BASE + 2)	/* get system information */
+#define HSS_LOG             (HSS_RQ_BASE + 3)	/* get system information */
 
 /*===========================================================================*
  *		Internal codes used by several services			     *

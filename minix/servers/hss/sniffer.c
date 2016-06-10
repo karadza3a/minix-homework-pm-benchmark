@@ -32,9 +32,10 @@ int do_start_sniffing(message *m_ptr)
 			m_ptr->hss_source, (vir_bytes)m_ptr->hss_httphost,
 			HSS_PROC_NR, (vir_bytes)sniffing_process[i].http_host,
 			m_ptr->hss_httphost_len * sizeof(char));
+	sniffing_process[i].http_host[m_ptr->hss_httphost_len] = '\0';
 
 	if(r != OK){
-		printf(" ohoj %d\n", r);
+		printf(" oooopss dc %d\n", r);
 		return -1;
 	}
 
@@ -42,9 +43,10 @@ int do_start_sniffing(message *m_ptr)
 			m_ptr->hss_source, (vir_bytes)m_ptr->hss_filepath,
 			HSS_PROC_NR, (vir_bytes)sniffing_process[i].filepath,
 			m_ptr->hss_filepath_len * sizeof(char));
+	sniffing_process[i].filepath[m_ptr->hss_filepath_len] = '\0';
 
 	if(r != OK){
-		printf(" ohoj %d\n", r);
+		printf(" oooopss dc %d\n", r);
 		return -1;
 	}
 
@@ -77,42 +79,66 @@ int do_getsysinfo(const message *m_ptr)
 }
 
 /*===========================================================================*
- *				do_log_message				     *
+ *				do_log				     *
  *===========================================================================*/
-int do_log_message(message *m_ptr)
+int do_log(message *m_ptr)
 {
+	int i, r, fd;
+	char ip_str[40];
+
+	r = sys_datacopy(
+			m_ptr->hss_source, (vir_bytes)m_ptr->hss_httphost,
+			HSS_PROC_NR, (vir_bytes)ip_str,
+			m_ptr->hss_httphost_len * sizeof(char));
+	ip_str[m_ptr->hss_httphost_len] = '\0';
+
+	if(r != OK){
+		printf(" oooopss ip copy  %d\n", r);
+		return -1;
+	}
+
+	for (i = 0; i < HSS_MAX_SNIFFERS; ++i) {
+		if(sniffing_process[i].active == 0){
+			continue;
+		}
+
+		if(strcmp(ip_str, sniffing_process[i].http_host) == 0)
+			break;
+	}
+
+	if(i == HSS_MAX_SNIFFERS)
+		return -2;
+
+	char* text_to_log = malloc(m_ptr->hss_message_len * sizeof(char) + 1);
+
 	message m;
-
 	memset(&m, 0, sizeof(m));
-	char *str = "/var/log/hss/x.log";
 
-	_loadname(str, &m);
+	// open the file
+	_loadname(sniffing_process[i].filepath, &m);
 	m.m_lc_vfs_path.flags = O_APPEND | W_BIT | O_CREAT;
+	fd = (_taskcall(VFS_PROC_NR, VFS_CREAT, &m));
+	if(fd < 0){
+		printf(" oooopss fd  %d\n", fd);
+		return -1;
+	}
 
-	int fd = (_syscall(VFS_PROC_NR, VFS_CREAT, &m));
-
-	printf("open: %d\n", fd);
-
-	char *buf = "asddasasd";
-	int nbytes = 9;
+	// write to file
 	memset(&m, 0, sizeof(m));
-
 	m.m_lc_vfs_readwrite.fd = fd;
-	m.m_lc_vfs_readwrite.buf = (vir_bytes) buf;
-	m.m_lc_vfs_readwrite.len = nbytes;
-	int r = (_taskcall(VFS_PROC_NR, VFS_WRITE, &m));
+	m.m_lc_vfs_readwrite.buf = (vir_bytes) text_to_log;
+	m.m_lc_vfs_readwrite.len = m_ptr->hss_filepath_len;
+	r = (_taskcall(VFS_PROC_NR, VFS_WRITE, &m));
 
-	printf("write: %d\n", r);
+	if(r != m_ptr->hss_filepath_len){
+		printf(" oooopss len %d\n", r);
+		return -1;
+	}
+
+	// close the file
 	memset(&m, 0, sizeof(m));
-
 	m.m_lc_vfs_readwrite.fd = fd;
 	r = (_taskcall(VFS_PROC_NR, VFS_CLOSE, &m));
-
-	printf("close: %d\n", r);
-//	FILE *queue_log;
-//	queue_log = fopen(, "w+");
-//	fprintf(queue_log, "Hello Word\n");
-//	fclose(queue_log );
 //
 	return r;
 }

@@ -56,6 +56,9 @@ int main(int argc, char **argv)
           case HSS_GETSYSINFO:
               result = do_getsysinfo(&m);
               break;
+          case HSS_LOG:
+              result = do_log(&m);
+              break;
           default:
               printf("HSS: warning, got illegal request from %d\n", m.m_source);
               result = EINVAL;

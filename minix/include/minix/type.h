@@ -189,14 +189,18 @@ struct minix_kerninfo {
 
 
 // HSS Server defines
-
-#define hss_filepath m_m7.m7p1
-#define hss_httphost m_m7.m7p2
-#define hss_filepath_len m_m7.m7i1
-#define hss_httphost_len m_m7.m7i2
 #define hss_id m_m7.m7i3
 #define hss_callnr m_m7.m7i4
 #define hss_source m_m7.m7i5
+
+#define hss_httphost m_m7.m7p1
+#define hss_httphost_len m_m7.m7i1
+
+#define hss_filepath m_m7.m7p2
+#define hss_filepath_len m_m7.m7i2
+
+#define hss_message m_m7.m7p2
+#define hss_message_len m_m7.m7i2
 
 #endif /* _TYPE_H */
 
