@@ -109,7 +109,18 @@ int do_log(message *m_ptr)
 	if(i == HSS_MAX_SNIFFERS)
 		return -2;
 
-	char* text_to_log = malloc(m_ptr->hss_message_len * sizeof(char) + 1);
+	char text_to_log[60];
+	r = sys_datacopy(
+			m_ptr->hss_source, (vir_bytes)m_ptr->hss_message,
+			HSS_PROC_NR, (vir_bytes)text_to_log,
+			m_ptr->hss_message_len * sizeof(char));
+	text_to_log[m_ptr->hss_message_len] = '\n';
+	text_to_log[m_ptr->hss_message_len+1] = '\0';
+
+	if(r != OK){
+		printf(" oooopss mes copy  %d\n", r);
+		return -1;
+	}
 
 	message m;
 	memset(&m, 0, sizeof(m));
@@ -127,10 +138,10 @@ int do_log(message *m_ptr)
 	memset(&m, 0, sizeof(m));
 	m.m_lc_vfs_readwrite.fd = fd;
 	m.m_lc_vfs_readwrite.buf = (vir_bytes) text_to_log;
-	m.m_lc_vfs_readwrite.len = m_ptr->hss_filepath_len;
+	m.m_lc_vfs_readwrite.len = m_ptr->hss_message_len+1;
 	r = (_taskcall(VFS_PROC_NR, VFS_WRITE, &m));
 
-	if(r != m_ptr->hss_filepath_len){
+	if(r != m_ptr->hss_filepath_len+1){
 		printf(" oooopss len %d\n", r);
 		return -1;
 	}

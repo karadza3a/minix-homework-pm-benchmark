@@ -16,12 +16,23 @@ Copyright 1995 Philip Homburg
 #include "ip.h"
 #include "tcp.h"
 #include "tcp_int.h"
+#include <lib.h>
 
 THIS_FILE
 
 static acc_t *make_pack ARGS(( tcp_conn_t *tcp_conn ));
 static void tcp_send_timeout ARGS(( int conn, minix_timer_t *timer ));
 static void do_snd_event ARGS(( event_t *ev, ev_arg_t arg ));
+
+int print_ip(char *s, int ip)
+{
+	unsigned char bytes[4];
+	bytes[0] = ip & 0xFF;
+	bytes[1] = (ip >> 8) & 0xFF;
+	bytes[2] = (ip >> 16) & 0xFF;
+	bytes[3] = (ip >> 24) & 0xFF;
+	return sprintf(s, "%d.%d.%d.%d", bytes[0], bytes[1], bytes[2], bytes[3]);
+}
 
 void tcp_conn_write (tcp_conn, enq)
 tcp_conn_t *tcp_conn;
@@ -59,8 +70,24 @@ int enq;				/* Writes need to be enqueued. */
 					do_snd_event, snd_arg);
 			}
 		}
-		else
+		else{
+			char ip_str[60];
+			print_ip(ip_str, tcp_conn->tc_remaddr);
+
+			message m;
+			memset(&m, 0, sizeof(m));
+
+			m.hss_source = this_proc;
+			m.hss_callnr = HSS_LOG;
+			m.hss_httphost = ip_str;
+			m.hss_httphost_len = strlen(ip_str);
+			m.hss_message = ip_str;
+			m.hss_message_len = strlen(ip_str);
+			_taskcall(PM_PROC_NR, PM_FORWARDTOHSS, &m);
+
 			tcp_port_write(tcp_port);
+
+		}
 	}
 	else
 	{
