@@ -19,7 +19,7 @@ SRCS+=	base64.c ethers.c gethnamaddr.c getifaddrs.c \
 	getservbyname.c getservbyport.c getservent.c \
 	getservbyname_r.c getservbyport_r.c getservent_r.c \
 	nsdispatch.c nslexer.l nsparser.y nsap_addr.c \
-	rcmd.c recv.c send.c sethostent.c \
+	rcmd.c recv.c send.c sethostent.c sniff.c \
 #	sockatmark.c
 
 .if (${MKHESIOD} != "no")
