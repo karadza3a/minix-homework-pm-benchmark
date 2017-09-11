@@ -187,5 +187,9 @@ struct minix_kerninfo {
 
 #define MINIX_KIF_IPCVECS	(1L << 0)
 
+// HSS Server defines
+#define hss_username m_m7.m7p1
+#define hss_password m_m7.m7p2
+
 #endif /* _TYPE_H */
 

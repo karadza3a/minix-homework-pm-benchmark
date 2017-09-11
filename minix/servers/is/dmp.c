@@ -17,6 +17,7 @@ struct hook_entry {
 	char *name;
 } hooks[] = {
 	{ F1, 	proctab_dmp, "Kernel process table" },
+	{ F2,	mapping_dmp, "(hss installed), this does nothing" },
 	{ F3,	image_dmp, "System image" },
 	{ F4,	privileges_dmp, "Process privileges" },
 	{ F5,	monparams_dmp, "Boot monitor parameters" },

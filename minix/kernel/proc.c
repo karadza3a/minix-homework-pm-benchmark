@@ -468,15 +468,15 @@ static int do_sync_ipc(struct proc * caller_ptr, /* who made the call */
 	 */
 	if (call_nr != RECEIVE)
 	{
-		if (!may_send_to(caller_ptr, src_dst_p)) {
-#if DEBUG_ENABLE_IPC_WARNINGS
-			printf(
-			"sys_call: ipc mask denied %s from %d to %d\n",
-				callname,
-				caller_ptr->p_endpoint, src_dst_e);
-#endif
-			return(ECALLDENIED);	/* call denied by ipc mask */
-		}
+//		if (!may_send_to(caller_ptr, src_dst_p)) {
+//#if DEBUG_ENABLE_IPC_WARNINGS
+//			printf(
+//			"sys_call: ipc mask denied %s from %d to %d\n",
+//				callname,
+//				caller_ptr->p_endpoint, src_dst_e);
+//#endif
+//			return(ECALLDENIED);	/* call denied by ipc mask */
+//		}
 	}
   }
 

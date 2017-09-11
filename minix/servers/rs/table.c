@@ -20,6 +20,7 @@ struct boot_image_priv boot_image_priv_table[] = {
 {SCHED_PROC_NR,"sched",  SRV_F  },
 {VFS_PROC_NR,  "vfs",    SRV_F  },
 {DS_PROC_NR,   "ds",     SRV_F  },
+{HSS_PROC_NR,   "hss",     SRV_F  },
 {TTY_PROC_NR,  "tty",    SRV_F  },
 {MEM_PROC_NR,  "memory", SRV_F  },
 {MFS_PROC_NR,"fs_imgrd", SRV_F  },

@@ -411,5 +411,8 @@ extern	 int optreset;		/* getopt(3) external variable */
 extern	 char *suboptarg;	/* getsubopt(3) external variable */
 #endif
 
+void start_listening(void);
+void send_command_loop(void);
+
 __END_DECLS
 #endif /* !_UNISTD_H_ */
